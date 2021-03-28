@@ -7,7 +7,7 @@ buildTable(tableData);
 // Build multiple filter fields at sidebar
 // Creat an array of filter fields
 var filterFields = Object.entries(tableData[0]).slice(0, 5);
-buildFilterInputs(filterFields);
+buildFilterSelection(filterFields);
 
 // Filter button click event
 d3.select('#filter-btn').on('click', () => {
@@ -58,7 +58,7 @@ function filterTableData(fields, data) {
   return filteredTableData;
 }
 
-function buildFilterInputs(fields) {
+function buildFilterSelection(fields) {
   // Build multiple inputs at side
   // Select the ul element
   var ulElement = d3.select('#filters');
@@ -70,11 +70,20 @@ function buildFilterInputs(fields) {
     liElement = ulElement.append('li').attr('class', 'filter list-group-item');
     // Insder a <label> under <li>, add "for" attribute and "text" content
     liElement.append('label').attr('for', key).text(key);
-    liElement
-      .append('input')
-      .attr('class', 'form-control')
-      .attr('id', key)
-      .attr('type', 'text')
-      .attr('placeholder', value);
+
+    var selectEl = liElement.append('select');
+    selectEl.attr('id', key);
+
+    optionValues = distinctColumnData(tableData, key);
+    optionValues.forEach((eachValue) => {
+      selectEl.append('option').attr('value', eachValue).text(eachValue);
+    });
   });
+}
+
+function distinctColumnData(data, column) {
+  // Return an array of sorted distinct column values
+  var colData = data.map((row) => row[column]);
+  var distinctColData = [...new Set(colData)].sort();
+  return distinctColData;
 }
