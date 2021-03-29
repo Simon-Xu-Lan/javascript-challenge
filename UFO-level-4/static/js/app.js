@@ -18,22 +18,13 @@ d3.selectAll('.selData').on('change', () => {
   console.log('changed');
   var selectedField = d3.event.target.id;
   var selectedValue = d3.event.target.value;
-
-  // Get selected filter field and its value. Store them in an object "filters"
-  var filters = {};
-  filterFields.forEach(([key]) => {
-    // use Vanilla JavaScript is easier to get seleted option value than d3
-    var sel = document.getElementById(key);
-    var value = sel.options[sel.selectedIndex].value;
-    if (value !== 'All') {
-      filters[key] = value;
-    }
-  });
-
-  // Use current selected filter data to filter table
-  var filteredData = filterTableData(filters, tableData);
-  updateOptions(filterFields, filteredData);
-  buildTable(filteredData);
+  console.log(selectedField, selectedValue);
+  // Update the global varilabe with filtered tableData everytime any select is changed.
+  // Therefore the later filter is based on the previous filtered data
+  tableData = tableData.filter((row) => row[selectedField] === selectedValue);
+  console.log(tableData);
+  updateOptions(filterFields, tableData);
+  buildTable(tableData);
 });
 
 // ########### - Define functions
@@ -54,13 +45,26 @@ function buildTable(data) {
   });
 }
 
-function filterTableData(filters, data) {
-  // Filter "tableData" by 'filters' object
-  filteredTableData = data;
+function filterTableData(fields, data) {
+  // Retrieve filter value inputs and put them in an object "filterInputs"
+  var filterInputs = {};
+  fields.forEach(([key]) => {
+    var inputValue = d3.select(`#${key}`).property('value');
+    if (inputValue !== '') {
+      filterInputs[key] = inputValue;
+    }
+  });
 
-  Object.entries(filters).forEach(([key, value]) => {
+  console.log('obj:', filterInputs);
+
+  // Filter "tableData" by 'filterInputs
+  filteredTableData = data;
+  console.log(filteredTableData);
+
+  Object.entries(filterInputs).forEach(([key, value]) => {
     filteredTableData = filteredTableData.filter((row) => row[key] === value);
   });
+  console.log(filteredTableData);
 
   return filteredTableData;
 }
@@ -92,14 +96,7 @@ function updateOptions(fields, data) {
       var selectEl = d3.select(`#${key}`);
       selectEl.html(''); // Clear current <select> html content
       optionValues.forEach((eachValue) => {
-        // if (eachValue === '') {
-        //   selectEl
-        //     .append('option')
-        //     .attr('value', eachValue)
-        //     .text('Please choose an option');
-        // } else {
         selectEl.append('option').attr('value', eachValue).text(eachValue);
-        // }
       });
     }
   });
