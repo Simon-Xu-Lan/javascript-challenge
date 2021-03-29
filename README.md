@@ -40,4 +40,6 @@ Use D3.js JavaScript, HTML, and CSS, to filter table on web pages.
 
 ## Lesson learned
 
--
+- D3 js is designed from data to DOM, so it is easy to build elements from data. However it is not convient to manipulate DOM by D3.js
+- Use vanilla js is good choice to manipute DOM if it can be easy done by D3.js
+- Therefore, use D3.js to do data driven things. use other tools such as vanilla js, jQuery to other things.

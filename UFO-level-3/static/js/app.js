@@ -1,4 +1,4 @@
-// ########### - Set up global variables
+// ########### - Init data and assign to global variables
 // Define a global varialbe "tableData", init it by data from data.js
 var tableData = data;
 // Creat an array of filter fields, assign it the a global variable "filterFieds"
@@ -15,7 +15,6 @@ updateOptions(filterFields, tableData);
 // Filter data by selction
 d3.selectAll('.selData').on('change', () => {
   d3.event.preventDefault();
-  console.log('changed');
   var selectedField = d3.event.target.id;
   var selectedValue = d3.event.target.value;
 

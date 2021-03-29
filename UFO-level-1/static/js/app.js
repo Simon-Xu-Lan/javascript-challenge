@@ -10,9 +10,10 @@ d3.select('#filter-btn').on('click', (event) => {
   buildTable(filteredTableData);
 });
 
-d3.select('#remove-btn').on('click', (event) => {
+d3.select('#remove-btn').on('click', () => {
   d3.event.preventDefault();
-  builtTable(tableData);
+  console.log('remove');
+  buildTable(tableData);
 });
 
 function buildTable(data) {
