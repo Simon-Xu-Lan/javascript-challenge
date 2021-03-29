@@ -4,17 +4,31 @@ var tableData = data;
 // Init the table
 buildTable(tableData);
 
-// Build multiple filter fields at sidebar
+// Init the seleciton
 // Creat an array of filter fields
 var filterFields = Object.entries(tableData[0]).slice(0, 5);
-buildFilterSelection(filterFields);
+updateSelection(filterFields, tableData);
 
-// Filter button click event
-d3.select('#filter-btn').on('click', () => {
-  d3.event.preventDefault();
-  var newTableData = filterTableData(filterFields, tableData);
-  buildTable(newTableData);
+var tableDataCopy = [...tableData];
+
+// Filter data by selction
+d3.selectAll('.selData').on('change', () => {
+  var selectedField = d3.event.target.id;
+  var selectedValue = d3.event.target.value;
+  // Filter tableData
+  tableDataCopy = tableDataCopy.filter(
+    (row) => row[selectedField] === selectedValue
+  );
+  updateSelection(filterFields, tableDataCopy);
+  buildTable(tableDataCopy);
 });
+
+// // Filter button click event
+// d3.select('#filter-btn').on('click', () => {
+//   d3.event.preventDefault();
+//   var newTableData = filterTableData(filterFields, tableData);
+//   buildTable(newTableData);
+// });
 
 // Define functions
 function buildTable(data) {
@@ -58,23 +72,24 @@ function filterTableData(fields, data) {
   return filteredTableData;
 }
 
-function buildFilterSelection(fields) {
+function updateSelection(fields, data) {
   // Build multiple inputs at side
   // Select the ul element
   var ulElement = d3.select('#filters');
-  // Clear the form
+  // Clear the html content under <ul>
   ulElement.html('');
-  // Build multiple inputs
+  // Build multiple selections
   fields.forEach(([key, value]) => {
     // Insert a <li> under <ul>
     liElement = ulElement.append('li').attr('class', 'filter list-group-item');
-    // Insder a <label> under <li>, add "for" attribute and "text" content
+    // Insert a <label> under <li>, add "for" attribute and "text" content
     liElement.append('label').attr('for', key).text(key);
-
+    // INsert a <select> under <li>, add key as id and "selData" as class
     var selectEl = liElement.append('select');
-    selectEl.attr('id', key);
+    selectEl.attr('id', key).attr('class', 'selData');
 
-    optionValues = distinctColumnData(tableData, key);
+    // Insert <option>s under each <select>, using distinct date to iterate
+    optionValues = distinctColumnData(data, key);
     optionValues.forEach((eachValue) => {
       selectEl.append('option').attr('value', eachValue).text(eachValue);
     });
@@ -85,5 +100,9 @@ function distinctColumnData(data, column) {
   // Return an array of sorted distinct column values
   var colData = data.map((row) => row[column]);
   var distinctColData = [...new Set(colData)].sort();
-  return distinctColData;
+  if (distinctColData.length > 1) {
+    return ['All'].concat(distinctColData);
+  } else {
+    return distinctColData;
+  }
 }
