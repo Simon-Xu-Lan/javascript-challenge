@@ -12,7 +12,7 @@ Use D3.js JavaScript, HTML, and CSS, to filter table on web pages.
 
 ## Level 2
 
-- <a href="https://simon-xu-lan.github.io/javascript-challenge/UFO-level-1/">Go to level 2 page</a>
+- <a href="https://simon-xu-lan.github.io/javascript-challenge/UFO-level-2/">Go to level 2 page</a>
 - Filter the table by mutilple fields
   - Datetime
   - City
