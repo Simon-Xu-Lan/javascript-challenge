@@ -1,17 +1,16 @@
-// ########### - Set up global variables
 // Define a global varialbe "tableData", init it by data from data.js
 var tableData = data;
-// Creat an array of filter fields, assign it the a global variable "filterFieds"
-var filterFields = Object.entries(tableData[0]).slice(0, 5);
 
-// ########### - Init webpage
 // Init the table
 buildTable(tableData);
-// Init the seleciton
-buildSelection(filterFields, tableData);
-updateOptions(filterFields, tableData);
 
-// ########### - Handle filter event
+// Init the seleciton
+// Creat an array of filter fields
+var filterFields = Object.entries(tableData[0]).slice(0, 5);
+updateSelection(filterFields, tableData);
+
+// var tableDataCopy = [...tableData];
+
 // Filter data by selction
 d3.selectAll('.selData').on('change', () => {
   d3.event.preventDefault();
@@ -23,11 +22,18 @@ d3.selectAll('.selData').on('change', () => {
   // Therefore the later filter is based on the previous filtered data
   tableData = tableData.filter((row) => row[selectedField] === selectedValue);
   console.log(tableData);
-  updateOptions(filterFields, tableData);
+  // updateSelection(filterFields, tableData);
   buildTable(tableData);
 });
 
-// ########### - Define functions
+// // Filter button click event
+// d3.select('#filter-btn').on('click', () => {
+//   d3.event.preventDefault();
+//   var newTableData = filterTableData(filterFields, tableData);
+//   buildTable(newTableData);
+// });
+
+// Define functions
 function buildTable(data) {
   var tableBodyElement = d3.select('#ufo-table').select('tbody');
   tableBodyElement.html('');
@@ -69,7 +75,7 @@ function filterTableData(fields, data) {
   return filteredTableData;
 }
 
-function buildSelection(fields, data) {
+function updateSelection(fields, data) {
   // Build multiple inputs at side
   // Select the ul element
   var ulElement = d3.select('#filters');
@@ -84,21 +90,12 @@ function buildSelection(fields, data) {
     // INsert a <select> under <li>, add key as id and "selData" as class
     var selectEl = liElement.append('select');
     selectEl.attr('id', key).attr('class', 'selData');
-  });
-}
 
-function updateOptions(fields, data) {
-  fields.forEach(([key, value]) => {
+    // Insert <option>s under each <select>, using distinct date to iterate
     optionValues = distinctColumnData(data, key);
-    // If optionValues has more than one elements, update <option>s under the <select>, using distinct date to iterate
-    // If optionValues has one and only one element, that means this is previous selected filter, no need to update options
-    if (optionValues.length > 1) {
-      var selectEl = d3.select(`#${key}`);
-      selectEl.html(''); // Clear current <select> html content
-      optionValues.forEach((eachValue) => {
-        selectEl.append('option').attr('value', eachValue).text(eachValue);
-      });
-    }
+    optionValues.forEach((eachValue) => {
+      selectEl.append('option').attr('value', eachValue).text(eachValue);
+    });
   });
 }
 
@@ -111,4 +108,5 @@ function distinctColumnData(data, column) {
   } else {
     return distinctColData;
   }
+  // return distinctColData;
 }
