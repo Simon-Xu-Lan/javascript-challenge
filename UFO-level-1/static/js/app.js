@@ -12,7 +12,7 @@ d3.select('#filter-btn').on('click', (event) => {
 
 d3.select('#remove-btn').on('click', (event) => {
   d3.event.preventDefault();
-  createTable(tableData);
+  builtTable(tableData);
 });
 
 function buildTable(data) {
